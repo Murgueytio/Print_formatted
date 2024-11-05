@@ -14,13 +14,10 @@
 
 # include <stdarg.h>
 # include <unistd.h>
-# include <stdlib.h>
 
-int	ft_printf(char const *str, ...);
-int	ft_putchar(char c);
-int	ft_putstr(char *s);
-int	ft_putnbr(int n);
-int	ft_putnbr_u(unsigned int n);
-int	ft_puthex(unsigned int n, char format);
+int		ft_printf(char const *format, ...);
+void	ft_base(unsigned long long n, char *base, int base_len, int *count);
+void	ft_putnbr(int nbr, int *count);
+void	ft_putstr(char *str, int *count);
 
 #endif
