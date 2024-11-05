@@ -10,58 +10,39 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "ft_printf.h"
-// REVISAR LAS SIGUIENTES FUNCIONES EN LA libft anterior.
-int	ft_putchar(char c)
+
+void	ft_base(unsigned long long n, char *base, int base_len, int *count)
 {
-	return (write(1, &c, 1));
+	char	number;
+
+	if (n >= (unsigned long long)base_len)
+		ft_base(n / base_len, base, base_len, count);
+	number = base[n % base_len];
+	*count += write(1, &number, 1);
 }
 
-int	ft_putstr(char *s)
+void	ft_putnbr(int nbr, int *count)
 {
-	int	count;
+	long long int	n;
 
-	count = 0;
-	if (!s)
-		return (ft_putstr("(null)"));
-	while (*s)
-		count += ft_putchar(*s++);
-	return (count);
-}
-
-int	ft_putnbr(int n)
-{
-	int	count;
-
-	count = 0;
-	if (n == -2147483648)
-		return (ft_putstr("-2147483648"));
+	n = nbr;
 	if (n < 0)
-		count += ft_putnbr(n / 10);
-	return (count + ft_putchar((n % 10) + '0'));
-}
-
-int	ft_puthex(unsigned int n, char format)
-{
-	char	*hex;
-	int		count;
-
-	count = 0;
-	if (format == 'x')
-		hex = "0123456789abcdef";
-	else
-		hex = "0123456789ABCDEF";
-	if (n >= 16)
-		count += ft_puthex(n / 16, format);
-	return (count + ft_putchar(hex[n & 16]));
-}
-
-int	ft_putnbr_u(unsigned int n)
-{
-	int	count;
-
-	count = 0;
+	{
+		*count += write(1, "-", 1);
+		n = -n;
+	}
 	if (n >= 10)
-		count += ft_putnbr_u(n / 10);
-	count += ft_putchar((n % 10) + '0');
-	return (count);
+		ft_putnbr(n / 10, count);
+	*count += write(1, &"0123456789"[n % 10], 1);
+}
+
+void	ft_putstr(char *str, int *count)
+{
+	if (!str)
+	{
+		*count += write(1, "(null)", 6);
+		return ;
+	}
+	while (*str)
+		*count += write(1, str++, 1);
 }
