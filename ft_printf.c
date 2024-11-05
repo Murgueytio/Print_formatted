@@ -11,43 +11,78 @@
 /* ************************************************************************** */
 #include "ft_printf.h"
 
-static int	ft_aux(char specifier, va_list args)
+static void	handle_char(char const *format, va_list argptr, int *count)
 {
-	if (specifier == 'c')
-		return (ft_putchar(va_arg(args, int)));
-	else if (specifier == 's')
-		return (ft_putstr(va_arg(args, char *)));
-	else if (specifier == 'd' || specifier == 'i')
-		return (ft_putnbr(va_arg(args, int)));
-	else if (specifier == 'u')
-		return (ft_putnbr_u(va_arg(args, unsigned int)));
-	else if (specifier == 'x' || specifier == 'X')
-		return (ft_puthex(va_arg(args, unsigned int), specifier));
-	else if (specifier == '%')
-		return (ft_putchar('%'));
-	return (0);
+	int		aux;
+
+	if (*format == 'c')
+	{
+		aux = va_arg(argptr, int);
+		*count += write(1, &aux, 1);
+	}
+	else if (*format == 's')
+		ft_putstr(va_arg(argptr, char *), count);
+}
+
+static void	handle_pointer(char const *format, va_list argptr, int *count)
+{
+	unsigned long long		addr;
+
+	if (*format == 'p')
+	{
+		addr = va_arg(argptr, unsigned long long);
+		if (addr == 0)
+		{
+			*count += write(1, "(nil)", 5);
+			return ;
+		}
+		*count += write(1, "0x", 2);
+		ft_base(addr, "0123456789abcdef", 16, count);
+	}
+}
+
+static void	handle_numbers(char const *format, va_list argptr, int *count)
+{
+	if (*format == 'd' || *format == 'i')
+		ft_putnbr(va_arg(argptr, int), count);
+	else if (*format == 'u')
+		ft_base(va_arg(argptr, unsigned int), "0123456789", 10, count);
+	else if (*format == 'x')
+		ft_base(va_arg(argptr, unsigned int), "0123456789abcdef", 16, count);
+	else if (*format == 'X')
+		ft_base(va_arg(argptr, unsigned int), "0123456789ABCDEF", 16, count);
+}
+
+static void	parse_format( char const *format, va_list argptr, int *count)
+{
+	if (*format == 'c' || *format == 's')
+		handle_char(format, argptr, count);
+	else if (*format == 'p')
+		handle_pointer(format, argptr, count);
+	else if (*format == 'd' || *format == 'i' || *format == 'u'
+		|| *format == 'x' || *format == 'X')
+		handle_numbers(format, argptr, count);
+	else if (*format == '%')
+		*count += write(1, "%", 1);
 }
 
 int	ft_printf(char const *format, ...)
 {
-	va_list	args;
-	int		count;
-	int		i;
+	int			count;
+	va_list		argptr;
 
-	va_start(args, format);
 	count = 0;
-	i = 0;
-	while (format[i])
+	va_start(argptr, format);
+	while (*format)
 	{
-		if (format[i] == '%' && format[i + 1])
-		{
-			i++;
-			count += ft_aux(format[i], args);
-		}
+		if (*format == '%' && *(format +1))
+			parse_format(++format, argptr, &count);
+		else if (*format == '%' && !*(format + 1))
+			break ;
 		else
-			count += ft_putchar(format[i]);
-		i++;
+			count += write(1, format, 1);
+		++format;
 	}
-	va_end(args);
+	va_end(argptr);
 	return (count);
 }
