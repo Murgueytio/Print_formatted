@@ -1,58 +1,41 @@
-#include <stdio.h>
-#include <stdarg.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oscamurg <oscamurg@student.42madrid.com>   #+#  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024-11-05 08:28:51 by oscamurg          #+#    #+#             */
+/*   Updated: 2024-11-05 08:28:51 by oscamurg         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "ft_printf.h"
+#include <stdio.h>
+#include <limits.h>
 
-int test_case(const char *str, ...)
+int	main(void)
 {
-    va_list args;
-    int ret_ft;
-    int ret_original;
+	char	a;
+	char	*str;
+	int		b;
+	int		c;
+	int		d;
 
-    va_start(args, str);
+	a = 'a';
+	str = "If there was certainty";
+	b = -3;
+	c = 3;
+	d = 12;
+	ft_printf("\nFT_Printf: \n %c\n %s\n %p\n %d\n %i\n %u\n %x\n %X\n %% \n",
+		a, str, str, b, c, b, d, d);
+	printf("\nPrintf: \n %c\n %s\n %p\n %d\n %i\n %u\n %x\n %X\n %% \n",
+		a, str, str, b, c, b, d, d);
     
-    printf("Original printf output: ");
-    ret_original = vprintf(str, args);
-    va_end(args);
-
-    va_start(args, str);
-    printf("ft_printf output: ");
-    ret_ft = ft_printf(str, args);
-    va_end(args);
-
-    printf(" | Return ft_printf: %d, Return original printf: %d\n", ret_ft, ret_original);
-
-    if (ret_ft == ret_original)
-    {
-        printf("Test passed!\n");
-        return 1;
-    }
-    else
-    {
-        printf("Test failed.\n");
-        return 0;
-    }
-}
-
-int main(void)
-{
-    int passed_tests = 0;
-    int total_tests = 5;
-
-    printf("\nTesting %%c:\n");
-    passed_tests += test_case("Character: %c\n", 'A');
-
-    printf("\nTesting %%s:\n");
-    passed_tests += test_case("String: %s\n", "If only there was certainty...");
-
-    printf("\nTesting %%d and %%i:\n");
-    passed_tests += test_case("Decimal: %d, Integer: %i\n", 111, -111);
-
-    printf("\nTesting %%u:\n");
-    passed_tests += test_case("Unsigned: %u\n", 4294967295U);
-
-    printf("\nTesting %%x and %%X:\n");
-    passed_tests += test_case("Hex lowercase: %x, Hex uppercase: %X\n", 255, 255);
-
-    printf("\nTest passed: %d/%d\n", passed_tests, total_tests);
-    return (0);
+	str = NULL;
+	ft_printf("\nFT_Printf NULL: %p %s\n", str, str);
+	printf("\nPrintf NULL: %p %s\n", str, str);
+    
+	ft_printf("Limits: %d %d %u %u\n", INT_MAX, INT_MIN, 0, UINT_MAX);
+	printf("Limits: %d %d %u %u\n", INT_MAX, INT_MIN, 0, UINT_MAX);
+	return (0);
 }
