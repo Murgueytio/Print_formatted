@@ -39,3 +39,33 @@ int	main(void)
 	printf("Limits: %d %d %u %u\n", INT_MAX, INT_MIN, 0, UINT_MAX);
 	return (0);
 }
+
+Out put:
+
+FT_Printf: 
+ a
+ If there was certainty
+ w0w402031
+ -3
+ 3
+ 4294967293
+ c
+ c
+ % 
+
+Printf: 
+ a
+ If there was certainty
+ 0x402031
+ -3
+ 3
+ 4294967293
+ c
+ C
+ % 
+
+FT_Printf NULL: nil Null
+
+Printf NULL: (nil) (null)
+Limits: 2147483647 -2147483648 0 4294967295
+Limits: 2147483647 -2147483648 0 4294967295
